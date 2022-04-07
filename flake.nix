@@ -92,5 +92,13 @@
         };
       }
     ))
-    // {inherit overlays;};
+    // 
+    {
+      defaultTemplate = {
+        path = ./template;
+        description = "Boilerplate for your jupyter-nix project";
+      };
+
+      inherit overlays;
+    };
 }
