@@ -73,8 +73,7 @@
         };
       }
     ))
-    // 
-    {
+    // {
       defaultTemplate = {
         path = ./template;
         description = "Boilerplate for your jupyter-nix project";
