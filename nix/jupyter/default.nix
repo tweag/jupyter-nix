@@ -1,18 +1,21 @@
-{ lib, python, poetry2nix }:
-
-let
-  addNativeBuildInputs = drv: inputs: drv.overridePythonAttrs (old: {
-    nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ inputs;
-  });
+{
+  lib,
+  python,
+  poetry2nix,
+}: let
+  addNativeBuildInputs = drv: inputs:
+    drv.overridePythonAttrs (old: {
+      nativeBuildInputs = (old.nativeBuildInputs or []) ++ inputs;
+    });
 
   poetryPackages = poetry2nix.mkPoetryPackages {
     inherit python;
     projectDir = ./.;
     overrides = poetry2nix.overrides.withDefaults (self: super: {
-      argon2-cffi = addNativeBuildInputs super.argon2-cffi [ self.flit-core ];
-      entrypoints = addNativeBuildInputs super.entrypoints [ self.flit-core ];
-      soupsieve = addNativeBuildInputs super.soupsieve [ self.hatchling ];
-      testpath = addNativeBuildInputs super.testpath [ self.flit-core ];
+      argon2-cffi = addNativeBuildInputs super.argon2-cffi [self.flit-core];
+      entrypoints = addNativeBuildInputs super.entrypoints [self.flit-core];
+      soupsieve = addNativeBuildInputs super.soupsieve [self.hatchling];
+      testpath = addNativeBuildInputs super.testpath [self.flit-core];
     });
   };
 
@@ -23,6 +26,5 @@ let
 
   # Makes the flat list an attrset
   packages = builtins.foldl' (obj: drv: {"${toName drv.name}" = drv;} // obj) {} poetryPackages.poetryPackages;
-
 in
   packages.jupyterlab
