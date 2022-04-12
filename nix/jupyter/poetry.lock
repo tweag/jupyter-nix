@@ -103,7 +103,7 @@ python-versions = "*"
 
 [[package]]
 name = "beautifulsoup4"
-version = "4.11.0"
+version = "4.11.1"
 description = "Screen-scraping library"
 category = "main"
 optional = false
@@ -195,12 +195,23 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
+name = "deprecation"
+version = "2.1.0"
+description = "A library to handle automated deprecations"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+packaging = "*"
+
+[[package]]
 name = "editables"
-version = "0.2"
+version = "0.3"
 description = "Editable installations"
 category = "main"
 optional = false
-python-versions = ">=3.5"
+python-versions = ">=3.7"
 
 [[package]]
 name = "entrypoints"
@@ -230,6 +241,14 @@ python-versions = "*"
 devel = ["colorama", "jsonschema", "json-spec", "pylint", "pytest", "pytest-benchmark", "pytest-cache", "validictory"]
 
 [[package]]
+name = "flit-core"
+version = "3.7.1"
+description = "Distribution-building parts of Flit. See flit package for more information"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[[package]]
 name = "hatchling"
 version = "0.22.0"
 description = "Modern, extensible Python build backend"
@@ -254,7 +273,7 @@ python-versions = ">=3.5"
 
 [[package]]
 name = "ipykernel"
-version = "6.12.1"
+version = "6.13.0"
 description = "IPython Kernel for Jupyter"
 category = "main"
 optional = false
@@ -408,6 +427,22 @@ pywin32 = {version = ">=1.0", markers = "sys_platform == \"win32\" and platform_
 traitlets = "*"
 
 [[package]]
+name = "jupyter-packaging"
+version = "0.12.0"
+description = "Jupyter Packaging Utilities."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+deprecation = "*"
+packaging = "*"
+tomlkit = "*"
+
+[package.extras]
+test = ["build", "coverage", "pre-commit", "pytest", "pytest-cov", "pytest-mock"]
+
+[[package]]
 name = "jupyter-server"
 version = "1.16.0"
 description = "The backend—i.e. core services, APIs, and REST endpoints—to Jupyter web applications."
@@ -460,14 +495,11 @@ ui-tests = ["build"]
 
 [[package]]
 name = "jupyterlab-pygments"
-version = "0.1.2"
+version = "0.2.1"
 description = "Pygments theme using JupyterLab CSS variables"
 category = "main"
 optional = false
-python-versions = "*"
-
-[package.dependencies]
-pygments = ">=2.4.1,<3"
+python-versions = ">=3.7"
 
 [[package]]
 name = "jupyterlab-server"
@@ -536,7 +568,7 @@ test = ["pytest", "pytest-tornasync", "pytest-console-scripts"]
 
 [[package]]
 name = "nbclient"
-version = "0.5.13"
+version = "0.6.0"
 description = "A client library for executing notebooks. Formerly nbconvert's ExecutePreprocessor."
 category = "main"
 optional = false
@@ -549,12 +581,12 @@ nest-asyncio = "*"
 traitlets = ">=5.0.0"
 
 [package.extras]
-sphinx = ["Sphinx (>=1.7)", "sphinx-book-theme", "mock", "moto", "myst-parser"]
-test = ["ipython (<8.0.0)", "ipykernel", "ipywidgets (<8.0.0)", "pytest (>=4.1)", "pytest-asyncio", "pytest-cov (>=2.6.1)", "check-manifest", "flake8", "mypy", "xmltodict", "black", "pip (>=18.1)", "wheel (>=0.31.0)", "setuptools (>=38.6.0)", "twine (>=1.11.0)"]
+sphinx = ["mock", "moto", "myst-parser", "Sphinx (>=1.7)", "sphinx-book-theme"]
+test = ["black", "check-manifest", "flake8", "ipykernel", "ipython (<8.0.0)", "ipywidgets (<8.0.0)", "mypy", "pip (>=18.1)", "pre-commit", "pytest (>=4.1)", "pytest-asyncio", "pytest-cov (>=2.6.1)", "setuptools (>=60.0)", "testpath", "twine (>=1.11.0)", "xmltodict"]
 
 [[package]]
 name = "nbconvert"
-version = "6.4.5"
+version = "6.5.0"
 description = "Converting Jupyter Notebooks"
 category = "main"
 optional = false
@@ -565,23 +597,24 @@ beautifulsoup4 = "*"
 bleach = "*"
 defusedxml = "*"
 entrypoints = ">=0.2.2"
-jinja2 = ">=2.4"
-jupyter-core = "*"
+jinja2 = ">=3.0"
+jupyter-core = ">=4.7"
 jupyterlab-pygments = "*"
 MarkupSafe = ">=2.0"
 mistune = ">=0.8.1,<2"
-nbclient = ">=0.5.0,<0.6.0"
-nbformat = ">=4.4"
+nbclient = ">=0.5.0"
+nbformat = ">=5.1"
+packaging = "*"
 pandocfilters = ">=1.4.1"
 pygments = ">=2.4.1"
-testpath = "*"
+tinycss2 = "*"
 traitlets = ">=5.0"
 
 [package.extras]
-all = ["pytest", "pytest-cov", "pytest-dependency", "ipykernel", "ipywidgets (>=7)", "pyppeteer (>=1,<1.1)", "tornado (>=4.0)", "sphinx (>=1.5.1)", "sphinx-rtd-theme", "nbsphinx (>=0.2.12)", "ipython"]
+all = ["pytest", "pytest-cov", "pytest-dependency", "ipykernel", "ipywidgets (>=7)", "pre-commit", "pyppeteer (>=1,<1.1)", "tornado (>=6.1)", "sphinx (>=1.5.1)", "sphinx-rtd-theme", "nbsphinx (>=0.2.12)", "ipython"]
 docs = ["sphinx (>=1.5.1)", "sphinx-rtd-theme", "nbsphinx (>=0.2.12)", "ipython"]
-serve = ["tornado (>=4.0)"]
-test = ["pytest", "pytest-cov", "pytest-dependency", "ipykernel", "ipywidgets (>=7)", "pyppeteer (>=1,<1.1)"]
+serve = ["tornado (>=6.1)"]
+test = ["pytest", "pytest-cov", "pytest-dependency", "ipykernel", "ipywidgets (>=7)", "pre-commit", "pyppeteer (>=1,<1.1)"]
 webpdf = ["pyppeteer (>=1,<1.1)"]
 
 [[package]]
@@ -725,7 +758,7 @@ testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
 name = "prometheus-client"
-version = "0.14.0"
+version = "0.14.1"
 description = "Python client for the Prometheus monitoring system."
 category = "main"
 optional = false
@@ -801,14 +834,14 @@ python-versions = ">=3.5"
 
 [[package]]
 name = "pyparsing"
-version = "3.0.7"
-description = "Python parsing module"
+version = "3.0.8"
+description = "pyparsing module - Classes and methods to define and execute parsing grammars"
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.6.8"
 
 [package.extras]
-diagrams = ["jinja2", "railroad-diagrams"]
+diagrams = ["railroad-diagrams", "jinja2"]
 
 [[package]]
 name = "pyrsistent"
@@ -953,15 +986,19 @@ tornado = ">=4"
 test = ["pytest"]
 
 [[package]]
-name = "testpath"
-version = "0.6.0"
-description = "Test utilities for code working with files and commands"
+name = "tinycss2"
+version = "1.1.1"
+description = "A tiny CSS parser"
 category = "main"
 optional = false
-python-versions = ">= 3.5"
+python-versions = ">=3.6"
+
+[package.dependencies]
+webencodings = ">=0.4"
 
 [package.extras]
-test = ["pytest"]
+doc = ["sphinx", "sphinx-rtd-theme"]
+test = ["pytest", "pytest-cov", "pytest-flake8", "pytest-isort", "coverage"]
 
 [[package]]
 name = "tomli"
@@ -970,6 +1007,14 @@ description = "A lil' TOML parser"
 category = "main"
 optional = false
 python-versions = ">=3.7"
+
+[[package]]
+name = "tomlkit"
+version = "0.10.1"
+description = "Style preserving TOML library"
+category = "main"
+optional = false
+python-versions = ">=3.6,<4.0"
 
 [[package]]
 name = "tornado"
@@ -1035,7 +1080,7 @@ test = ["websockets"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "f2e1d118a4ad1d308c3ecddea061df152e604dbe71948fe880480cea6c69d9e2"
+content-hash = "1556bdae09c5ef4896508b42e22b908dbe121fb10da9f5270cb945725d4016ed"
 
 [metadata.files]
 anyio = [
@@ -1090,8 +1135,8 @@ backcall = [
     {file = "backcall-0.2.0.tar.gz", hash = "sha256:5cbdbf27be5e7cfadb448baf0aa95508f91f2bbc6c6437cd9cd06e2a4c215e1e"},
 ]
 beautifulsoup4 = [
-    {file = "beautifulsoup4-4.11.0-py3-none-any.whl", hash = "sha256:577b9e1c36d2ada780d807c5622e889d43172466658c2eb239e97296965cdddb"},
-    {file = "beautifulsoup4-4.11.0.tar.gz", hash = "sha256:ac98f868e1cb8eb9932a61be75b4f7018a118a490e7fdb424a74a982430cfcbd"},
+    {file = "beautifulsoup4-4.11.1-py3-none-any.whl", hash = "sha256:58d5c3d29f5a36ffeb94f02f0d786cd53014cf9b3b3951d42e0080d8a9498d30"},
+    {file = "beautifulsoup4-4.11.1.tar.gz", hash = "sha256:ad9aa55b65ef2808eb405f46cf74df7fcb7044d5cbc26487f96eb2ef2e436693"},
 ]
 bleach = [
     {file = "bleach-5.0.0-py3-none-any.whl", hash = "sha256:08a1fe86d253b5c88c92cc3d810fd8048a16d15762e1e5b74d502256e5926aa1"},
@@ -1189,9 +1234,13 @@ defusedxml = [
     {file = "defusedxml-0.7.1-py2.py3-none-any.whl", hash = "sha256:a352e7e428770286cc899e2542b6cdaedb2b4953ff269a210103ec58f6198a61"},
     {file = "defusedxml-0.7.1.tar.gz", hash = "sha256:1bb3032db185915b62d7c6209c5a8792be6a32ab2fedacc84e01b52c51aa3e69"},
 ]
+deprecation = [
+    {file = "deprecation-2.1.0-py2.py3-none-any.whl", hash = "sha256:a10811591210e1fb0e768a8c25517cabeabcba6f0bf96564f8ff45189f90b14a"},
+    {file = "deprecation-2.1.0.tar.gz", hash = "sha256:72b3bde64e5d778694b0cf68178aed03d15e15477116add3fb773e581f9518ff"},
+]
 editables = [
-    {file = "editables-0.2-py3-none-any.whl", hash = "sha256:fe9afdc51df78ac3b20a2c2dd763b36ac412a70c59ca39fc782d45797dcb619a"},
-    {file = "editables-0.2.tar.gz", hash = "sha256:6918f16225258f24ef9800c2327e14eded42ddac344e77982380749464024f35"},
+    {file = "editables-0.3-py3-none-any.whl", hash = "sha256:ee686a8db9f5d91da39849f175ffeef094dd0e9c36d6a59a2e8c7f92a3b80020"},
+    {file = "editables-0.3.tar.gz", hash = "sha256:167524e377358ed1f1374e61c268f0d7a4bf7dbd046c656f7b410cde16161b1a"},
 ]
 entrypoints = [
     {file = "entrypoints-0.4-py3-none-any.whl", hash = "sha256:f174b5ff827504fd3cd97cc3f8649f3693f51538c7e4bdf3ef002c8429d42f9f"},
@@ -1205,6 +1254,10 @@ fastjsonschema = [
     {file = "fastjsonschema-2.15.3-py3-none-any.whl", hash = "sha256:ddb0b1d8243e6e3abb822bd14e447a89f4ab7439342912d590444831fa00b6a0"},
     {file = "fastjsonschema-2.15.3.tar.gz", hash = "sha256:0a572f0836962d844c1fc435e200b2e4f4677e4e6611a2e3bdd01ba697c275ec"},
 ]
+flit-core = [
+    {file = "flit_core-3.7.1-py3-none-any.whl", hash = "sha256:e454fdbf68c7036e1c7435ec7479383f9d9a1650ca5b304feb184eba1efcdcef"},
+    {file = "flit_core-3.7.1.tar.gz", hash = "sha256:14955af340c43035dbfa96b5ee47407e377ee337f69e70f73064940d27d0a44f"},
+]
 hatchling = [
     {file = "hatchling-0.22.0-py2.py3-none-any.whl", hash = "sha256:81f2e6063cdbdf17ea11cffe603dfa3fba781da0c127a2814ab1eb5b864de2c0"},
     {file = "hatchling-0.22.0.tar.gz", hash = "sha256:054276e05e2838dffd756a679c334ce6720eba1df2bb096f0e72c0f6e400217a"},
@@ -1214,8 +1267,8 @@ idna = [
     {file = "idna-3.3.tar.gz", hash = "sha256:9d643ff0a55b762d5cdb124b8eaa99c66322e2157b69160bc32796e824360e6d"},
 ]
 ipykernel = [
-    {file = "ipykernel-6.12.1-py3-none-any.whl", hash = "sha256:d840e3bf1c4b23bf6939f78dcdae639c9f6962e41d17e1c084a18c3c7f972d3a"},
-    {file = "ipykernel-6.12.1.tar.gz", hash = "sha256:0868f5561729ade444011f8ca7d3502dc9f27f7f44e20f1d5fee7e1f2b7183a1"},
+    {file = "ipykernel-6.13.0-py3-none-any.whl", hash = "sha256:2b0987af43c0d4b62cecb13c592755f599f96f29aafe36c01731aaa96df30d39"},
+    {file = "ipykernel-6.13.0.tar.gz", hash = "sha256:0e28273e290858393e86e152b104e5506a79c13d25b951ac6eca220051b4be60"},
 ]
 ipython = [
     {file = "ipython-8.2.0-py3-none-any.whl", hash = "sha256:1b672bfd7a48d87ab203d9af8727a3b0174a4566b4091e9447c22fb63ea32857"},
@@ -1249,6 +1302,10 @@ jupyter-core = [
     {file = "jupyter_core-4.9.2-py3-none-any.whl", hash = "sha256:f875e4d27e202590311d468fa55f90c575f201490bd0c18acabe4e318db4a46d"},
     {file = "jupyter_core-4.9.2.tar.gz", hash = "sha256:d69baeb9ffb128b8cd2657fcf2703f89c769d1673c851812119e3a2a0e93ad9a"},
 ]
+jupyter-packaging = [
+    {file = "jupyter_packaging-0.12.0-py2.py3-none-any.whl", hash = "sha256:a90902c8b8718c4e1164dfe275b611fbf67fee6bf0070587a735d601010ae81b"},
+    {file = "jupyter_packaging-0.12.0.tar.gz", hash = "sha256:b27455d60adc93a7baa2e0b8f386be81b932bb4e3c0116046df9ed230cd3faac"},
+]
 jupyter-server = [
     {file = "jupyter_server-1.16.0-py3-none-any.whl", hash = "sha256:72dd1ff5373d2def94e80632ba4397e504cc9200c5b5f44b5b0af2e062a73353"},
     {file = "jupyter_server-1.16.0.tar.gz", hash = "sha256:c756f87ad64b84e2aa522ef482445e1a93f7fe4a5fc78358f4636e53c9a0463a"},
@@ -1258,8 +1315,8 @@ jupyterlab = [
     {file = "jupyterlab-3.3.3.tar.gz", hash = "sha256:294d67126015ba397f6b1c80563deec862e47e042623851bbe2a7d870d69eb6a"},
 ]
 jupyterlab-pygments = [
-    {file = "jupyterlab_pygments-0.1.2-py2.py3-none-any.whl", hash = "sha256:abfb880fd1561987efaefcb2d2ac75145d2a5d0139b1876d5be806e32f630008"},
-    {file = "jupyterlab_pygments-0.1.2.tar.gz", hash = "sha256:cfcda0873626150932f438eccf0f8bf22bfa92345b814890ab360d666b254146"},
+    {file = "jupyterlab_pygments-0.2.1-py2.py3-none-any.whl", hash = "sha256:05f8056a18fec9ebef01f705443d81edb16bb03d27371f23c0ae135a85a76029"},
+    {file = "jupyterlab_pygments-0.2.1.tar.gz", hash = "sha256:121da770930e348895f89d6bdfce7e7e6a8bb574162923f9c9ef5a20c61619c6"},
 ]
 jupyterlab-server = [
     {file = "jupyterlab_server-2.12.0-py3-none-any.whl", hash = "sha256:db5d234955c5c2684f77a064345712f071acf7df31f0d8c31b420b33b09d6472"},
@@ -1320,12 +1377,12 @@ nbclassic = [
     {file = "nbclassic-0.3.7.tar.gz", hash = "sha256:36dbaa88ffaf5dc05d149deb97504b86ba648f4a80a60b8a58ac94acab2daeb5"},
 ]
 nbclient = [
-    {file = "nbclient-0.5.13-py3-none-any.whl", hash = "sha256:47ac905af59379913c1f8f541098d2550153cf8dc58553cbe18c702b181518b0"},
-    {file = "nbclient-0.5.13.tar.gz", hash = "sha256:40c52c9b5e3c31faecaee69f202b3f53e38d7c1c563de0fadde9d7eda0fdafe8"},
+    {file = "nbclient-0.6.0-py3-none-any.whl", hash = "sha256:2eed35fc954716cdf0a01ea8cbdd9f9316761479008570059e2f5de29e139423"},
+    {file = "nbclient-0.6.0.tar.gz", hash = "sha256:3f89a403c6badf24d2855a455b69a80985b3b27e04111243fdb6a88a28d27031"},
 ]
 nbconvert = [
-    {file = "nbconvert-6.4.5-py3-none-any.whl", hash = "sha256:e01d219f55cc79f9701c834d605e8aa3acf35725345d3942e3983937f368ce14"},
-    {file = "nbconvert-6.4.5.tar.gz", hash = "sha256:21163a8e2073c07109ca8f398836e45efdba2aacea68d6f75a8a545fef070d4e"},
+    {file = "nbconvert-6.5.0-py3-none-any.whl", hash = "sha256:c56dd0b8978a1811a5654f74c727ff16ca87dd5a43abd435a1c49b840fcd8360"},
+    {file = "nbconvert-6.5.0.tar.gz", hash = "sha256:223e46e27abe8596b8aed54301fadbba433b7ffea8196a68fd7b1ff509eee99d"},
 ]
 nbformat = [
     {file = "nbformat-5.3.0-py3-none-any.whl", hash = "sha256:38856d97de49e8292e2d5d8f595e9d26f02abfd87e075d450af4511870b40538"},
@@ -1372,8 +1429,8 @@ pluggy = [
     {file = "pluggy-1.0.0.tar.gz", hash = "sha256:4224373bacce55f955a878bf9cfa763c1e360858e330072059e10bad68531159"},
 ]
 prometheus-client = [
-    {file = "prometheus_client-0.14.0-py3-none-any.whl", hash = "sha256:f4aba3fdd1735852049f537c1f0ab177159b7ab76f271ecc4d2f45aa2a1d01f2"},
-    {file = "prometheus_client-0.14.0.tar.gz", hash = "sha256:8f7a922dd5455ad524b6ba212ce8eb2b4b05e073f4ec7218287f88b1cac34750"},
+    {file = "prometheus_client-0.14.1-py3-none-any.whl", hash = "sha256:522fded625282822a89e2773452f42df14b5a8e84a86433e3f8a189c1d54dc01"},
+    {file = "prometheus_client-0.14.1.tar.gz", hash = "sha256:5459c427624961076277fdc6dc50540e2bacb98eebde99886e59ec55ed92093a"},
 ]
 prompt-toolkit = [
     {file = "prompt_toolkit-3.0.29-py3-none-any.whl", hash = "sha256:62291dad495e665fca0bda814e342c69952086afb0f4094d0893d357e5c78752"},
@@ -1434,8 +1491,8 @@ pygments = [
     {file = "Pygments-2.11.2.tar.gz", hash = "sha256:4e426f72023d88d03b2fa258de560726ce890ff3b630f88c21cbb8b2503b8c6a"},
 ]
 pyparsing = [
-    {file = "pyparsing-3.0.7-py3-none-any.whl", hash = "sha256:a6c06a88f252e6c322f65faf8f418b16213b51bdfaece0524c1c1bc30c63c484"},
-    {file = "pyparsing-3.0.7.tar.gz", hash = "sha256:18ee9022775d270c55187733956460083db60b37d0d0fb357445f3094eed3eea"},
+    {file = "pyparsing-3.0.8-py3-none-any.whl", hash = "sha256:ef7b523f6356f763771559412c0d7134753f037822dad1b16945b7b846f7ad06"},
+    {file = "pyparsing-3.0.8.tar.gz", hash = "sha256:7bf433498c016c4314268d95df76c81b842a4cb2b276fa3312cfb1e1d85f6954"},
 ]
 pyrsistent = [
     {file = "pyrsistent-0.18.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:df46c854f490f81210870e509818b729db4488e1f30f2a1ce1698b2295a878d1"},
@@ -1566,13 +1623,17 @@ terminado = [
     {file = "terminado-0.13.3-py3-none-any.whl", hash = "sha256:874d4ea3183536c1782d13c7c91342ef0cf4e5ee1d53633029cbc972c8760bd8"},
     {file = "terminado-0.13.3.tar.gz", hash = "sha256:94d1cfab63525993f7d5c9b469a50a18d0cdf39435b59785715539dd41e36c0d"},
 ]
-testpath = [
-    {file = "testpath-0.6.0-py3-none-any.whl", hash = "sha256:8ada9f80a2ac6fb0391aa7cdb1a7d11cfa8429f693eda83f74dde570fe6fa639"},
-    {file = "testpath-0.6.0.tar.gz", hash = "sha256:2f1b97e6442c02681ebe01bd84f531028a7caea1af3825000f52345c30285e0f"},
+tinycss2 = [
+    {file = "tinycss2-1.1.1-py3-none-any.whl", hash = "sha256:fe794ceaadfe3cf3e686b22155d0da5780dd0e273471a51846d0a02bc204fec8"},
+    {file = "tinycss2-1.1.1.tar.gz", hash = "sha256:b2e44dd8883c360c35dd0d1b5aad0b610e5156c2cb3b33434634e539ead9d8bf"},
 ]
 tomli = [
     {file = "tomli-2.0.1-py3-none-any.whl", hash = "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc"},
     {file = "tomli-2.0.1.tar.gz", hash = "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"},
+]
+tomlkit = [
+    {file = "tomlkit-0.10.1-py3-none-any.whl", hash = "sha256:3eba517439dcb2f84cf39f4f85fd2c3398309823a3c75ac3e73003638daf7915"},
+    {file = "tomlkit-0.10.1.tar.gz", hash = "sha256:3c517894eadef53e9072d343d37e4427b8f0b6200a70b7c9a19b2ebd1f53b951"},
 ]
 tornado = [
     {file = "tornado-6.1-cp35-cp35m-macosx_10_9_x86_64.whl", hash = "sha256:d371e811d6b156d82aa5f9a4e08b58debf97c302a35714f6f45e35139c332e32"},

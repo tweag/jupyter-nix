@@ -14,6 +14,9 @@
     overrides = poetry2nix.overrides.withDefaults (self: super: {
       argon2-cffi = addNativeBuildInputs super.argon2-cffi [self.flit-core];
       entrypoints = addNativeBuildInputs super.entrypoints [self.flit-core];
+      jupyterlab-pygments = addNativeBuildInputs super.jupyterlab-pygments [self.jupyter-packaging];
+      notebook-shim = addNativeBuildInputs super.notebook-shim [self.jupyter-packaging];
+      pyparsing = addNativeBuildInputs super.pyparsing [self.flit-core];
       soupsieve = addNativeBuildInputs super.soupsieve [self.hatchling];
       testpath = addNativeBuildInputs super.testpath [self.flit-core];
     });
