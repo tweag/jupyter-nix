@@ -239,7 +239,7 @@
           '';
         };
         checks = {
-          inherit pre-commit jupyterlab;
+          inherit pre-commit jupyterlab example_jupyterlab;
         };
       }
     ))
