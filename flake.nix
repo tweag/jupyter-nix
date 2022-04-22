@@ -5,6 +5,7 @@
   nixConfig.extra-trusted-public-keys = "jupyterwith.cachix.org-1:/kDy2B6YEhXGJuNguG1qyqIodMyO4w8KwWH4/vAc7CI=";
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+  inputs.nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-21.11";
   inputs.flake-compat.url = "github:edolstra/flake-compat";
   inputs.flake-compat.flake = false;
   inputs.flake-utils.url = "github:numtide/flake-utils";
@@ -30,6 +31,7 @@
   outputs = {
     self,
     nixpkgs,
+    nixpkgs-stable,
     flake-compat,
     flake-utils,
     gitignore,
@@ -44,7 +46,16 @@
   in
     (flake-utils.lib.eachSystem SYSTEMS (
       system: let
+        inherit (nixpkgs) lib;
+
         pkgs = import nixpkgs {
+          inherit system;
+          overlays = [
+            poetry2nix.overlay
+          ];
+        };
+
+        pkgs_stable = import nixpkgs-stable {
           inherit system;
           overlays = [
             poetry2nix.overlay
@@ -58,57 +69,133 @@
           };
         };
 
-        jupyterlab = import ./nix/jupyter {
+        jupyterlab = import (self + "/nix/jupyter") {
           inherit (pkgs) lib poetry2nix;
           python = pkgs.python3;
         };
 
-        copyKernelLogo = name: logo: filename:
-          pkgs.lib.optionalString (logo != null) ''
-            cp ${logo} $out/kernels/${name}/${filename}
-          '';
+        mkKernel = kernel: args: name: let
+          # TODO: we should probably assert that the kernel is correctly shaped.
+          #{ name,                    # required; type: string
+          #, language,                # required; type: enum or string
+          #, argv,                    # required; type: list of strings
+          #, display_name ? name      # optional; type: string
+          #, codemirror_mode ? "yaml" # optional; type: enum or string
+          #, logo32,                  # optional; type: absolute store path
+          #, logo64,                  # optional; type: absolute store path
+          #}:
+          args' =
+            lib.mapAttrs'
+            (
+              name: value:
+                if name == "displayName"
+                then {
+                  name = "display_name";
+                  inherit value;
+                }
+                else {inherit name value;}
+            )
+            args;
 
-        mkKernel = {
-          name,
-          display_name,
-          language,
-          argv,
-          logo32 ? null,
-          logo64 ? null,
-        }:
-        # TODO: add logos to kernel.json
-          pkgs.runCommand "${name}-jupyter-kernel" {} (
+          kernelInstance = kernel ({inherit name;} // args);
+
+          kernelLogos = ["logo32" "logo64"];
+
+          kernelJSON =
+            builtins.mapAttrs
+            (
+              n: v:
+                if builtins.elem n kernelLogos
+                then baseNameOf v
+                else v
+            )
+            kernelInstance;
+
+          copyKernelLogos =
+            builtins.concatStringsSep "\n"
+            (
+              builtins.map
+              (
+                logo: let
+                  kernelLogoPath = kernelInstance.${logo};
+                in
+                  lib.optionalString (builtins.hasAttr logo kernelInstance) ''
+                    cp ${kernelLogoPath} $out/kernels/${kernelInstance.name}/${baseNameOf kernelLogoPath}
+                  ''
+              )
+              kernelLogos
+            );
+        in
+          pkgs.runCommand "${kernelInstance.name}-jupyter-kernel"
+          {
+            passthru = {
+              inherit kernel kernelInstance kernelJSON;
+              IS_JUPYTER_KERNEL = true;
+            };
+          }
+          (
             ''
-              mkdir -p $out/kernels/${name}
-              echo '${builtins.toJSON {inherit display_name language argv;}}' \
+              mkdir -p $out/kernels/${kernelInstance.name}
+              echo '${builtins.toJSON kernelJSON}' \
                 > $out/kernels/${name}/kernel.json
             ''
-            + (copyKernelLogo name logo32 "logo-32x32.png")
-            + (copyKernelLogo name logo64 "logo-64x64.png")
+            + copyKernelLogos
           );
 
-        # kernel
-        mkKernelAnsible = {display_name ? null}:
-        # https://github.com/nix-community/poetry2nix#mkPoetryEnv
-        {
-          self,
-          pkgs,
-          projectDir,
-          pyproject,
-          poetrylock,
-          python,
-          overrides,
-          editablePackageSources,
-          extraPackages,
-        }:
-          mkKernel (import ./kernels/ansible/default.nix {inherit self pkgs;});
-
-        kernelsString = pkgs.lib.concatStringsSep ":";
-
         mkJupyterlabInstance = {
-          kernels,
-          # TODO:, extensions
-        }:
+          kernels ? k: {}, # k: { python: k.python {}; },
+          extensions ? e: [], # e: [ e.jupy-ext ],
+        }: let
+          kernelsPath = self + "/kernels";
+
+          availableKernels =
+            lib.optionalAttrs
+            (lib.pathExists kernelsPath)
+            (
+              lib.mapAttrs'
+              (
+                kernelName: _: {
+                  name = kernelName;
+                  value =
+                    lib.makeOverridable
+                    (import (kernelsPath + "/${kernelName}/default.nix"))
+                    {
+                      inherit self pkgs;
+                      inherit (pkgs) poetry2nix;
+                    };
+                }
+              )
+              (
+                lib.filterAttrs
+                (
+                  kernelName: pathType:
+                    pathType
+                    == "directory"
+                    && lib.pathExists (kernelsPath + "/${kernelName}/default.nix")
+                )
+                (builtins.readDir kernelsPath)
+              )
+            );
+
+          kernelInstances =
+            lib.mapAttrsToList
+            # TODO: provide a nice error message when something is not a function with one argument
+            (kernelName: kernel: kernel kernelName)
+            (kernels availableKernels);
+
+          requestedKernels =
+            builtins.filter
+            (
+              kernel:
+              # TODO: provide a nice error message when something is not a kernel
+                lib.isDerivation kernel
+                && builtins.hasAttr "IS_JUPYTER_KERNEL" kernel
+                && kernel.IS_JUPYTER_KERNEL == true
+            )
+            kernelInstances;
+
+          kernelsString = lib.concatStringsSep ":";
+        in
           pkgs.runCommand "wrapper-${jupyterlab.name}"
           {nativeBuildInputs = [pkgs.makeWrapper];}
           ''
@@ -116,42 +203,27 @@
             for i in ${jupyterlab}/bin/*; do
               filename=$(basename $i)
               ln -s ${jupyterlab}/bin/$filename $out/bin/$filename
-              wrapProgram $out/bin/$filename --set JUPYTER_PATH ${kernelsString kernels}
+              wrapProgram $out/bin/$filename --set JUPYTER_PATH ${kernelsString requestedKernels}
             done
           '';
-        # In project:
-        #mkAnsible = jupyter-nix.lib.mkKernelAnsible.override { projectDir = ./different-ansible-kernel; };
-        #myjupyter = mkJupyterlabInstance {
-        #  kernels = [
-        #    (jupyter-nix.lib.mkKernelAnsible {})
-        #  ];
-        #};
-        # as TOML v1
-        # [myjupyter]
-        # kernels = [ "ansible" ]
-        # extensions = [ "ssss" ]
-        #
-        # as TOML v1.5
-        # [myjupyter]
-        # extensions = [ "ssss" ]
-        #
-        # [myjupyter.kernels.mypython3]
-        # type = "python3"
-        # projectDir = "./mypython3"
-        # overrides = "./mypython3/overrides.nix"
-        #
-        # as TOML v2
-        # [myjupyter]
-        # extensions = [ "ssss" ]
-        #
-        # [myjupyter.kernels.mypython3]
-        # type = "python3"
-        # extra-dependencies = [
-        #   "requests"
-        # ]
-        # overrides = "./mypython3/overrides.nix"
+
+        example_jupyterlab = mkJupyterlabInstance {
+          kernels = k: let
+            ansible_stable = k.ansible.override {
+              pkgs = pkgs_stable;
+            };
+          in {
+            example_ansible_stable = mkKernel ansible_stable {
+              displayName = "Example (stable) Ansible Kernel";
+            };
+            example_ansible = mkKernel k.ansible {
+              displayName = "Example Ansible Kernel";
+            };
+          };
+        };
       in rec {
-        packages = {inherit jupyterlab;};
+        lib = {inherit mkKernel mkJupyterlabInstance;};
+        packages = {inherit jupyterlab example_jupyterlab;};
         packages.default = packages.jupyterlab;
         devShell = pkgs.mkShell {
           packages = [
@@ -168,7 +240,6 @@
         };
         checks = {
           inherit pre-commit jupyterlab;
-          #test-ansible = mkJupyterlabInstance { kernels = [ kernel-ansible ]; };
         };
       }
     ))

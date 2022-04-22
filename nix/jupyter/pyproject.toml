@@ -8,6 +8,7 @@ authors = []
 python = "^3.9"
 jupyterlab = "^3.3.3"
 
+[tool.poetry.dev-dependencies]
 # build systems for dependencies
 hatchling = "^0.22.0"
 flit_core = "^3.7.1"
