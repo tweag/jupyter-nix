@@ -15,8 +15,8 @@
   inputs.pre-commit-hooks.inputs.flake-utils.follows = "flake-utils";
   inputs.pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
   inputs.poetry2nix.url = "github:nix-community/poetry2nix";
-  #inputs.poetry2nix.inputs.flake-utils.follows = "flake-utils";
-  #inputs.poetry2nix.inputs.nixpkgs.follows = "nixpkgs";
+  inputs.poetry2nix.inputs.flake-utils.follows = "flake-utils";
+  inputs.poetry2nix.inputs.nixpkgs.follows = "nixpkgs";
   #inputs.ihaskell.url = "github:gibiansky/IHaskell";
   #inputs.ihaskell.inputs.nixpkgs.follows = "nixpkgs";
   #inputs.ihaskell.inputs.flake-compat.follows = "flake-compat";
