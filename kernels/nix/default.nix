@@ -1,33 +1,41 @@
 {
   self,
   pkgs,
-  poetry2nix, # TODO: Use poetry for python environment or figure out how to modify the flake so it isn't passed by default
+  poetry2nix,
   nix ? pkgs.nixVersions.stable,
-  pythonArg ? null,
-  pythonPackagesArg ? null,
-  nix-kernel-arg ? null,
+  projectDir ? null,
+  pyproject ? null,
+  poetrylock ? null,
+  python ? null,
 }:
 let
-  python =
-    if pythonArg == null
-    then pkgs.python3
-    else pythonArg;
+  env = poetry2nix.mkPoetryPackages
+  {
+    projectDir =
+      if projectDir == null
+      then self + "/kernels/nix"
+      else projectDir;
 
-  pythonPackages =
-    if pythonPackagesArg == null
-    then pkgs.python3Packages
-    else pythonPackagesArg;
+    pyproject =
+      if pyproject == null
+      then projectDir + "/pyproject.toml"
+      else pyproject;
 
-  nix-kernel =
-    if nix-kernel-arg == null
-    then (import ./nix-kernel { inherit pkgs python pythonPackages; })
-    else nix-kernel-arg;
+    poetrylock =
+      if poetrylock == null
+      then projectDir + "/poetry.lock"
+      else poetrylock;
 
-  kernelEnv = python.withPackages (ps: with ps; [ nix-kernel ]);
+    python =
+      if python == null
+      then pkgs.python3
+      else python;
+  };
 
-  nix-bin = pkgs.writeScriptBin "nix-kernel" ''
+  nix-bin = pkgs.writeScriptBin "nix-kernel"
+    ''
       #! ${pkgs.stdenv.shell}
-      PATH=${nix}/bin/:${kernelEnv}/bin:$PATH
+      PATH=${nix}/bin/:${env.python}/bin:$PATH
       exec python -m nix-kernel $@
     '';
 in
