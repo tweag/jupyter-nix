@@ -228,7 +228,9 @@
             for i in ${jupyterlab}/bin/*; do
               filename=$(basename $i)
               ln -s ${jupyterlab}/bin/$filename $out/bin/$filename
-              wrapProgram $out/bin/$filename --set JUPYTER_PATH ${kernelsString requestedKernels}
+              wrapProgram $out/bin/$filename \
+                --set JUPYTERLAB_DIR ${jupyterlab}/share/jupyter/lab \
+                --set JUPYTER_PATH ${kernelsString requestedKernels}
             done
           '';
 
