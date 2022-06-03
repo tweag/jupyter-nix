@@ -18,45 +18,43 @@
       nativeBuildInputs = (old.nativeBuildInputs or []) ++ inputs;
     });
 
-  _projectDir =
-    if projectDir == null
-    then self + "/kernels/nix"
-    else projectDir;
+  env = poetry2nix.mkPoetryApplication envArgs;
 
-  env =
-    poetry2nix.mkPoetryApplication
-    {
-      projectDir = _projectDir;
+  envArgs = {
+    projectDir =
+      if projectDir == null
+      then self + "/kernels/nix"
+      else projectDir;
 
-      pyproject =
-        if pyproject == null
-        then _projectDir + "/pyproject.toml"
-        else pyproject;
+    pyproject =
+      if pyproject == null
+      then envArgs.projectDir + "/pyproject.toml"
+      else pyproject;
 
-      poetrylock =
-        if poetrylock == null
-        then _projectDir + "/poetry.lock"
-        else poetrylock;
+    poetrylock =
+      if poetrylock == null
+      then envArgs.projectDir + "/poetry.lock"
+      else poetrylock;
 
-      python =
-        if python == null
-        then pkgs.python3
-        else python;
+    python =
+      if python == null
+      then pkgs.python3
+      else python;
 
-      overrides =
-        if overrides == null
-        then
-          poetry2nix.overrides.withDefaults (self: super: {
-            traitlets = addNativeBuildInputs super.traitlets [self.hatchling];
-            terminado = addNativeBuildInputs super.terminado [self.hatchling];
-            ipykernel = super.ipykernel.overridePythonAttrs (old: {
-              postPatch = ''
-                sed -i "/debugpy/d" setup.py
-              '';
-            });
-          })
-        else overrides;
-    };
+    overrides =
+      if overrides == null
+      then
+        poetry2nix.overrides.withDefaults (self: super: {
+          traitlets = addNativeBuildInputs super.traitlets [self.hatchling];
+          terminado = addNativeBuildInputs super.terminado [self.hatchling];
+          ipykernel = super.ipykernel.overridePythonAttrs (old: {
+            postPatch = ''
+              sed -i "/debugpy/d" setup.py
+            '';
+          });
+        })
+      else overrides;
+  };
 
   # Transform python3.9-xxxx-1.8.0 to xxxx
   toName = s:
