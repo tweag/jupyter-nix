@@ -18,7 +18,7 @@
       nativeBuildInputs = (old.nativeBuildInputs or []) ++ inputs;
     });
 
-  env = poetry2nix.mkPoetryApplication envArgs;
+  env = poetry2nix.mkPoetryPackages envArgs;
 
   envArgs = {
     projectDir =
@@ -56,22 +56,14 @@
       else overrides;
   };
 
-  # Transform python3.9-xxxx-1.8.0 to xxxx
-  toName = s:
-    lib.strings.concatStringsSep "-"
-    (lib.lists.drop 1 (lib.lists.init (lib.strings.splitString "-" s)));
-
-  # Makes the flat list an attrset
-  packages = builtins.foldl' (obj: drv: {"${toName drv.name}" = drv;} // obj) {} env.poetryPackages;
-
   nix-bin =
-    pkgs.runCommand "wrapper-${env.name}"
+    pkgs.runCommand "wrapper-${env.python.name}"
     {nativeBuildInputs = [pkgs.makeWrapper];}
     ''
       mkdir -p $out/bin
-      for i in ${env}/bin/*; do
+      for i in ${env.python}/bin/*; do
         filename=$(basename $i)
-        ln -s ${env}/bin/$filename $out/bin/$filename
+        ln -s ${env.python}/bin/$filename $out/bin/$filename
         wrapProgram $out/bin/$filename \
           --set PATH ${nix}/bin
       done
