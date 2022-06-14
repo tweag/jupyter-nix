@@ -1,52 +1,27 @@
 {
   self,
   pkgs,
-  poetry2nix,
-  nix ? pkgs.nixVersions.stable,
   # https://github.com/nix-community/poetry2nix#mkPoetryPackages
-  projectDir ? null,
-  pyproject ? null,
-  poetrylock ? null,
-  overrides ? null,
-  python ? null,
+  projectDir ? self + "/kernels/bash",
+  pyproject ? projectDir + "/pyproject.toml",
+  poetrylock ? projectDir + "/poetry.lock",
+  overrides ? pkgs.poetry2nix.overrides.withDefaults (import ./overrides.nix),
+  python ? pkgs.python3,
   editablePackageSources ? {},
+  extraPackages ? ps: [],
+  preferWheels ? false,
 }: let
-  inherit (pkgs) lib;
-
-  addNativeBuildInputs = drv: inputs:
-    drv.overridePythonAttrs (old: {
-      nativeBuildInputs = (old.nativeBuildInputs or []) ++ inputs;
-    });
-
-  env = poetry2nix.mkPoetryPackages envArgs;
-
-  envArgs = {
-    projectDir =
-      if projectDir == null
-      then self + "/kernels/bash"
-      else projectDir;
-
-    pyproject =
-      if pyproject == null
-      then envArgs.projectDir + "/pyproject.toml"
-      else pyproject;
-
-    poetrylock =
-      if poetrylock == null
-      then envArgs.projectDir + "/poetry.lock"
-      else poetrylock;
-
-    python =
-      if python == null
-      then pkgs.python3
-      else python;
-
-    overrides =
-      if overrides == null
-      then
-        poetry2nix.overrides.withDefaults (self: super: {
-        })
-      else overrides;
+  env = pkgs.poetry2nix.mkPoetryEnv {
+    inherit
+      projectDir
+      pyproject
+      poetrylock
+      overrides
+      python
+      editablePackageSources
+      extraPackages
+      preferWheels
+      ;
   };
 in
   {
@@ -54,7 +29,7 @@ in
     displayName ? "Bash", # TODO: add Bash version
     language ? "bash",
     argv ? [
-      "${env.python.interpreter}"
+      "${env}/bin/python"
       "-m"
       "bash_kernel"
       "-f"
