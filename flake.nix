@@ -5,7 +5,7 @@
   nixConfig.extra-trusted-public-keys = "tweag-jupyter.cachix.org-1:UtNH4Zs6hVUFpFBTLaA4ejYavPo5EFFqgd7G7FxGW9g=";
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-  inputs.nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-21.11";
+  inputs.nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-22.05";
   inputs.flake-compat.url = "github:edolstra/flake-compat";
   inputs.flake-compat.flake = false;
   inputs.flake-utils.url = "github:numtide/flake-utils";
@@ -69,35 +69,11 @@
           };
         };
 
-        jupyterlab = let
-          addNativeBuildInputs = drv: inputs:
-            drv.overridePythonAttrs (old: {
-              nativeBuildInputs = (old.nativeBuildInputs or []) ++ inputs;
-            });
-
-          poetryPackages = pkgs.poetry2nix.mkPoetryPackages {
-            python = pkgs.python3;
-            projectDir = ./.;
-            overrides = pkgs.poetry2nix.overrides.withDefaults (self: super: {
-              argon2-cffi = addNativeBuildInputs super.argon2-cffi [self.flit-core];
-              entrypoints = addNativeBuildInputs super.entrypoints [self.flit-core];
-              jupyterlab-pygments = addNativeBuildInputs super.jupyterlab-pygments [self.jupyter-packaging];
-              notebook-shim = addNativeBuildInputs super.notebook-shim [self.jupyter-packaging];
-              pyparsing = addNativeBuildInputs super.pyparsing [self.flit-core];
-              soupsieve = addNativeBuildInputs super.soupsieve [self.hatchling];
-              testpath = addNativeBuildInputs super.testpath [self.flit-core];
-            });
-          };
-
-          # Transform python3.9-xxxx-1.8.0 to xxxx
-          toName = s:
-            lib.strings.concatStringsSep "-"
-            (lib.lists.drop 1 (lib.lists.init (lib.strings.splitString "-" s)));
-
-          # Makes the flat list an attrset
-          packages = builtins.foldl' (obj: drv: {"${toName drv.name}" = drv;} // obj) {} poetryPackages.poetryPackages;
-        in
-          packages.jupyterlab;
+        jupyterlab = pkgs.poetry2nix.mkPoetryEnv {
+          python = pkgs.python3;
+          projectDir = self; # TODO: only include relevant files/folders
+          overrides = pkgs.poetry2nix.overrides.withDefaults (import ./overrides.nix);
+        };
 
         mkKernel = kernel: args: name: let
           # TODO: we should probably assert that the kernel is correctly shaped.
@@ -184,10 +160,7 @@
                   value =
                     lib.makeOverridable
                     (import (kernelsPath + "/${kernelName}/default.nix"))
-                    {
-                      inherit self pkgs;
-                      inherit (pkgs) poetry2nix;
-                    };
+                    {inherit self pkgs;};
                 }
               )
               (
@@ -260,9 +233,6 @@
             pkgs.alejandra
             poetry2nix.defaultPackage.${system}
             pkgs.python3Packages.poetry
-
-            # ansible kernel
-            pkgs.stdenv.cc.cc.lib
           ];
           shellHook = ''
             ${pre-commit.shellHook}
