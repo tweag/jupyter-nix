@@ -35,7 +35,7 @@ in
       "-f"
       "{connection_file}"
     ],
-    codemirror_mode ? "yaml",
+    codemirror_mode ? "clike",
     logo64 ? ./logo64.png,
   }: {
     inherit
