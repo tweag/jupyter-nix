@@ -219,6 +219,9 @@
             example_ansible = mkKernel k.ansible {
               displayName = "Example Ansible Kernel";
             };
+            example_c = mkKernel k.c {
+              displayName = "Example C Kernel";
+            };
           };
         };
       in rec {
