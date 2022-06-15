@@ -4,4 +4,10 @@ final: prev: let
       nativeBuildInputs = (old.nativeBuildInputs or []) ++ inputs;
     });
   };
-in {}
+in
+  {}
+  // addNativeBuildInputs "bash-kernel" [final.flit-core]
+  // addNativeBuildInputs "bash-kernel" [final.ipykernel]
+  // addNativeBuildInputs "traitlets" [final.hatchling]
+  // addNativeBuildInputs "jupyter-client" [final.hatchling]
+  // addNativeBuildInputs "ipykernel" [final.hatchling]
