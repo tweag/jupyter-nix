@@ -219,6 +219,9 @@
             example_ansible = mkKernel k.ansible {
               displayName = "Example Ansible Kernel";
             };
+            example_rust = mkKernel k.rust {
+              displayName = "Example Rust Kernel";
+            };
           };
         };
       in rec {
