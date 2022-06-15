@@ -183,19 +183,31 @@ python-versions = "*"
 devel = ["colorama", "jsonschema", "json-spec", "pylint", "pytest", "pytest-benchmark", "pytest-cache", "validictory"]
 
 [[package]]
-name = "hatchling"
-version = "0.22.0"
-description = "Modern, extensible Python build backend"
+name = "hatch-vcs"
+version = "0.2.0"
+description = "Hatch plugin for versioning with your preferred VCS"
 category = "dev"
 optional = false
 python-versions = "*"
 
 [package.dependencies]
-editables = {version = ">=0.2", markers = "python_version > \"3\""}
-packaging = {version = ">=21.3", markers = "python_version > \"3\""}
+hatchling = ">=0.21.0"
+setuptools-scm = {version = ">=6.4.0", markers = "python_version > \"3\""}
+
+[[package]]
+name = "hatchling"
+version = "1.3.1"
+description = "Modern, extensible Python build backend"
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+editables = ">=0.3"
+packaging = ">=21.3"
 pathspec = ">=0.9"
-pluggy = {version = ">=1.0.0", markers = "python_version > \"3\""}
-tomli = {version = ">=1.2.2", markers = "python_version > \"3\""}
+pluggy = ">=1.0.0"
+tomli = {version = ">=1.2.2", markers = "python_version < \"3.11\""}
 
 [[package]]
 name = "ipykernel"
@@ -722,6 +734,22 @@ objc = ["pyobjc-framework-cocoa"]
 win32 = ["pywin32"]
 
 [[package]]
+name = "setuptools-scm"
+version = "6.4.2"
+description = "the blessed package to manage your versions by scm tags"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+packaging = ">=20.0"
+tomli = ">=1.0.0"
+
+[package.extras]
+test = ["pytest (>=6.2)", "virtualenv (>20)"]
+toml = ["setuptools (>=42)"]
+
+[[package]]
 name = "six"
 version = "1.16.0"
 description = "Python 2 and 3 compatibility utilities"
@@ -830,7 +858,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "4c919971a4b4ef23b9f2891035dd0ca9c009eacb8b70ad08d4cfab745ed4c9d3"
+content-hash = "b7850e2cd333b57e3b0478eb0f47c06b572338c40b566cf379e6a8a3517fc972"
 
 [metadata.files]
 appnope = [
@@ -984,9 +1012,13 @@ fastjsonschema = [
     {file = "fastjsonschema-2.15.3-py3-none-any.whl", hash = "sha256:ddb0b1d8243e6e3abb822bd14e447a89f4ab7439342912d590444831fa00b6a0"},
     {file = "fastjsonschema-2.15.3.tar.gz", hash = "sha256:0a572f0836962d844c1fc435e200b2e4f4677e4e6611a2e3bdd01ba697c275ec"},
 ]
+hatch-vcs = [
+    {file = "hatch_vcs-0.2.0-py2.py3-none-any.whl", hash = "sha256:86432a0dd49acae0e69e14f285667693fcd31d9869ca21634520acc30d482f07"},
+    {file = "hatch_vcs-0.2.0.tar.gz", hash = "sha256:9913d733b34eec9bb0345d0626ca32165a4ad2de15d1ce643c36d09ca908abff"},
+]
 hatchling = [
-    {file = "hatchling-0.22.0-py2.py3-none-any.whl", hash = "sha256:81f2e6063cdbdf17ea11cffe603dfa3fba781da0c127a2814ab1eb5b864de2c0"},
-    {file = "hatchling-0.22.0.tar.gz", hash = "sha256:054276e05e2838dffd756a679c334ce6720eba1df2bb096f0e72c0f6e400217a"},
+    {file = "hatchling-1.3.1-py3-none-any.whl", hash = "sha256:283926d5d6c1ed2e60b597f0f169021cf3a86f1b6030dc9b91394523bf035773"},
+    {file = "hatchling-1.3.1.tar.gz", hash = "sha256:aaa63019c9d666053d9ff318097335e766123844547c52940155c0401c3c142f"},
 ]
 ipykernel = [
     {file = "ipykernel-6.14.0-py3-none-any.whl", hash = "sha256:cbf50ed3dc9998d4077d8cd263275f232cbe67dbd2e79cd6d2644f3a4418148b"},
@@ -1301,6 +1333,10 @@ pyzmq = [
 send2trash = [
     {file = "Send2Trash-1.8.0-py3-none-any.whl", hash = "sha256:f20eaadfdb517eaca5ce077640cb261c7d2698385a6a0f072a4a5447fd49fa08"},
     {file = "Send2Trash-1.8.0.tar.gz", hash = "sha256:d2c24762fd3759860a0aff155e45871447ea58d2be6bdd39b5c8f966a0c99c2d"},
+]
+setuptools-scm = [
+    {file = "setuptools_scm-6.4.2-py3-none-any.whl", hash = "sha256:acea13255093849de7ccb11af9e1fb8bde7067783450cee9ef7a93139bddf6d4"},
+    {file = "setuptools_scm-6.4.2.tar.gz", hash = "sha256:6833ac65c6ed9711a4d5d2266f8024cfa07c533a0e55f4c12f6eff280a5a9e30"},
 ]
 six = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
