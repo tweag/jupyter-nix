@@ -35,7 +35,7 @@ in
       "-f"
       "{connection_file}"
     ],
-    codemirror_mode ? "",
+    codemirror_mode ? "shell",
     logo64 ? ./logo64.png,
   }: {
     inherit
