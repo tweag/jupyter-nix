@@ -222,6 +222,9 @@
             example_bash = mkKernel k.bash {
               displayName = "Example Bash Kernel";
             };
+            example_ipython = mkKernel k.ipython {
+              displayName = "Example IPython Kernel";
+            };
           };
         };
       in rec {
