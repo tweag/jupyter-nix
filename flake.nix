@@ -222,6 +222,9 @@
             example_c = mkKernel k.c {
               displayName = "Example C Kernel";
             };
+            example_ipython = mkKernel k.ipython {
+              displayName = "Example IPython Kernel";
+            };
           };
         };
       in rec {
