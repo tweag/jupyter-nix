@@ -43,7 +43,9 @@ in
     displayName ? "Nix", # TODO: add Nix version
     language ? "Nix",
     argv ? [
-      "${nix-bin}/bin/nix-kernel"
+      "${nix-bin}/bin/python"
+      "-m"
+      "nix-kernel"
       "-f"
       "{connection_file}"
     ],
