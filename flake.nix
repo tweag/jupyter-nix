@@ -222,6 +222,15 @@
             example_nix = mkKernel k.nix {
               displayName = "Example Nix Kernel";
             };
+            example_bash = mkKernel k.bash {
+              displayName = "Example Bash Kernel";
+            };
+            example_c = mkKernel k.c {
+              displayName = "Example C Kernel";
+            };
+            example_ipython = mkKernel k.ipython {
+              displayName = "Example IPython Kernel";
+            };
           };
         };
       in rec {
