@@ -2,7 +2,7 @@
   self,
   pkgs,
   # https://github.com/nix-community/poetry2nix#mkPoetryEnv
-  projectDir ? self + "/kernels/ansible",
+  projectDir ? self + "/kernels/c",
   pyproject ? projectDir + "/pyproject.toml",
   poetrylock ? projectDir + "/poetry.lock",
   overrides ? pkgs.poetry2nix.overrides.withDefaults (import ./overrides.nix),
@@ -25,17 +25,17 @@
   };
 in
   {
-    name ? "ansible",
-    displayName ? "Ansible", # TODO: add Ansible version
-    language ? "ansible",
+    name ? "c",
+    displayName ? "C", # TODO: add C version
+    language ? "c",
     argv ? [
       "${env}/bin/python"
       "-m"
-      "ansible_kernel"
+      "jupyter_c_kernel"
       "-f"
       "{connection_file}"
     ],
-    codemirrorMode ? "yaml",
+    codemirrorMode ? "clike",
     logo64 ? ./logo64.png,
   }: {
     inherit
