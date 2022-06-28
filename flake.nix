@@ -69,11 +69,18 @@
           };
         };
 
-        jupyterlab = pkgs.poetry2nix.mkPoetryEnv {
-          python = pkgs.python3;
-          projectDir = self; # TODO: only include relevant files/folders
-          overrides = pkgs.poetry2nix.overrides.withDefaults (import ./overrides.nix);
-        };
+        jupyterlab =
+          (pkgs.poetry2nix.mkPoetryEnv {
+            python = pkgs.python3;
+            projectDir = self; # TODO: only include relevant files/folders
+            overrides = pkgs.poetry2nix.overrides.withDefaults (import ./overrides.nix);
+          })
+          .override {
+            postBuild = ''
+              rm -rf $out/share/jupyter/kernels
+              #exit 123
+            '';
+          };
 
         mkKernel = kernel: args: name: let
           # TODO: we should probably assert that the kernel is correctly shaped.
