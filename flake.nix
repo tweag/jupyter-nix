@@ -78,7 +78,6 @@
           .override {
             postBuild = ''
               rm -rf $out/share/jupyter/kernels
-              #exit 123
             '';
           };
 
