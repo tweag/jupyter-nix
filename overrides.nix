@@ -16,6 +16,7 @@ in
     jupyter-client = prev.jupyter-client.overridePythonAttrs (old: {
       nativeBuildInputs = (old.nativeBuildInputs or []) ++ [final.hatchling];
       postPatch = ''
+        # default the native kernel to False so it does not appear in the env
         sed -i \
           -e "/ensure_native_kernel = Bool(/!b;n;c\        False," \
           jupyter_client/kernelspec.py

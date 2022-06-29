@@ -194,6 +194,7 @@
 
           kernelsString = lib.concatStringsSep ":";
 
+          # create directories for storing jupyter configs
           jupyterDir = pkgs.runCommand "jupyter-dir" {} ''
             mkdir -p $out/config $out/data
           '';
