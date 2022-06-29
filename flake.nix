@@ -211,8 +211,8 @@
                 --set JUPYTER_PATH ${kernelsString requestedKernels} \
                 --set JUPYTER_CONFIG_DIR "${jupyterDir}/config" \
                 --set JUPYTER_DATA_DIR "${jupyterDir}/data" \
-                --set IPYTHONDIR "/does-not-exists" \
-                --set JUPYTER_RUNTIME_DIR '$HOME/.local/share/jupyter/runtime'
+                --set IPYTHONDIR "/path-not-set" \
+                --set JUPYTER_RUNTIME_DIR "/path-not-set"
             done
           '';
 
